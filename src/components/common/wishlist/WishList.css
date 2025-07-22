@@ -1,0 +1,25 @@
+.wishlist-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background-color: rgba(50, 70, 130, 0.3);
+    padding: 50px;
+    width: 400px;
+    backdrop-filter: blur(12px);
+}
+
+
+.close-wishlist {
+    position: fixed;
+    top: 20px;
+    right: 15px;
+    color: red;
+}
+
+.close-wishlist:hover {
+    transform: scale(1.03);
+    cursor: pointer;
+}
+

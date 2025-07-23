@@ -2,12 +2,13 @@ import React from 'react'
 import './Search.css'
 import { motion } from 'framer-motion'
 import { XCircle } from 'lucide-react'
-import { useShop } from '../../../contexts/ShopContext'
+import { useSearch } from '../../../contexts/SearchContext'
+
 
 export default function Search() {
 
-    // Get the function to display the search bar from the shop Context
-    const { setShowSearch } = useShop()
+    // Get the function to display the search bar from the SearchContext
+    const { setShowSearch } = useSearch()
 
   return (
     <motion.div

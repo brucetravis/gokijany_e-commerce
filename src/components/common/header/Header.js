@@ -3,7 +3,9 @@ import './Header.css'
 import logo from '../../../images/gokijany-logo-nobg.png'
 import { Heart, Menu, Search, ShoppingCartIcon, User2Icon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { useShop } from '../../../contexts/ShopContext'
+import { useCart } from '../../../contexts/CartContext'
+import { useWish } from '../../../contexts/WishListContext'
+import { useSearch } from '../../../contexts/SearchContext'
 
 export default function Header() {
   
@@ -13,8 +15,12 @@ export default function Header() {
   // useNavigate to naviaget to other pages
   const navigate = useNavigate()
 
-  // function to control the cart, wishlist and search bar display from the ShopContext
-  const { setShowCart, setShowWishList, setShowSearch } = useShop()
+  // function to control the cart, wishlist and search bar display from their contexts
+  const { setShowCart } = useCart()
+
+  const { setShowWishList } = useWish()
+
+  const { setShowSearch } = useSearch()
 
   return (
     <header className='shop-header position-fixed top-0 start-0 end-0 '>

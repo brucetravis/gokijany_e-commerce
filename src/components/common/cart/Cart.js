@@ -2,12 +2,12 @@ import React from 'react'
 import './Cart.css'
 import { motion } from 'framer-motion'
 import { XCircle } from 'lucide-react'
-import { useShop } from '../../../contexts/ShopContext'
+import { useCart } from '../../../contexts/CartContext'
 
 export default function Cart() {
   
-  // Function fro the shopContext to control closing of the cart
-  const { setShowCart } = useShop()
+  // Function from the CartContext to control closing of the cart
+  const { setShowCart } = useCart()
 
   return (
     <motion.div 

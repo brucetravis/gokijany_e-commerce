@@ -2,12 +2,13 @@ import React from 'react'
 import './WishList.css'
 import { motion } from 'framer-motion'
 import { XCircle } from 'lucide-react'
-import { useShop } from '../../../contexts/ShopContext'
+import { useWish } from '../../../contexts/WishListContext'
+
 
 export default function WishList() {
 
-    // Get the function fro the ShopContext to control the display of the wishlist
-    const { setShowWishList } = useShop()
+    // Get the function from the WishListContext to control the display of the wishlist
+    const { setShowWishList } = useWish()
 
   return (
     <motion.div

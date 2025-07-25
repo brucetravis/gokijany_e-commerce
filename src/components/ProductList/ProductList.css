@@ -1,0 +1,169 @@
+.products-list {
+  padding: 20px;
+  padding-top: 100px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.products-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.back-btn {
+  background: #4CAF50;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-btn:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+}
+
+.page-title {
+  color: white;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 30px;
+  max-width: 600px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px 20px 15px 50px;
+  border: none;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: white;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.search-input:focus {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.product-item {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.product-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.product-item-image {
+  width: 100%;
+  height: 200px;
+  background: #2563eb;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.product-item-image::before {
+  content: 'AdBlue';
+  position: absolute;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+}
+
+.product-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+}
+
+.product-item-info {
+  color: white;
+}
+
+.product-item-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.product-item-description {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.product-item-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4CAF50;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .products-list {
+    padding: 15px;
+    padding-top: 80px;
+  }
+  
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}

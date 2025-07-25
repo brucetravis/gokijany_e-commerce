@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import Registration from './pages/registration/Registration';
 import Shop from './pages/shop/Shop';
 import { AnimatePresence } from 'framer-motion';
 import Cart from './components/common/cart/Cart';
@@ -9,6 +8,8 @@ import Search from './components/common/search/Search';
 import { useCart } from './contexts/CartContext';
 import { useSearch } from './contexts/SearchContext';
 import { useWish } from './contexts/WishListContext';
+import ProductDetails from './pages/ProductDetails/ProductDetails';
+import ProductList from './components/ProductList/ProductList';
 
 function App() {
 
@@ -24,7 +25,8 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path='/registration' element={<Registration />} />
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
         <Route path='/' element={<Shop />} />
       </Routes>
 

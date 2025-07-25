@@ -23,6 +23,7 @@ export default function SideBar() {
           <input type='checkbox' name='solar_energy' />
           <label htmlFor='all' className='fs-5'>Solar Energy</label>
         </div>
+        <a href='/products' className='fs-5'>Products</a>
       </div>
 
     </motion.div>

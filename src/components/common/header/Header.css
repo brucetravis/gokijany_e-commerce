@@ -7,7 +7,6 @@
     top: 0;
     left: 0;
     right: 0;
-    /* background-color: red; */
     z-index: 500;
 }
 
@@ -16,58 +15,160 @@
     width: 100px;
 }
 
-
 .shop-header .header-logo img:hover {
     cursor: pointer;
 }
 
 .header-icons {
     color: white;
-    /* color: #11e075; */
     display: flex;
     gap: 50px
 }
-
 
 .header-icons:hover {
     cursor: pointer;
 }
 
+/* Registration Popup Styles */
+.registration-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+}
 
-/* .header-mobile-icons, .header-menu {
-    display: none;
-} */
+.registration-popup {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    margin: 20px;
+    position: relative;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(17, 224, 117, 0.1);
+    animation: slideUp 0.4s ease-out;
+}
 
-/* .header-mobile-icons {
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-button:hover {
+    background: rgba(255, 255, 255, 0.2);
     color: white;
-    /* flex-direction: column; 
-    padding: 10px;
-    gap: 50px;
-} */
+    transform: scale(1.05);
+}
+
+.popup-content {
+    text-align: center;
+}
+
+.popup-header h2 {
+    color: white;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #11e075, #22ff88);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.popup-header p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    margin-bottom: 32px;
+}
+
+.google-signup-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    margin-bottom: 24px;
+}
+
+.google-signup-btn:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(17, 224, 117, 0.2);
+}
+
+.google-icon {
+    flex-shrink: 0;
+}
 
 
-/* @media screen and (max-width: 992px) {
-    .shop-header .header-logo img {
-        display: none;
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
     }
-
-
-    .header-icons {
-        display: none;
+    to {
+        opacity: 1;
     }
+}
 
-    .header-menu {
-        color: white;
-        display: flex;
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
     }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
 
-    .header-mobile-icons {
-        display: flex;
-        /* color: white; 
-        color: blue;
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
+/* Responsive Design */
+@media screen and (max-width: 480px) {
+    .registration-popup {
+        padding: 32px 24px;
+        margin: 20px;
+        border-radius: 20px;
     }
-} */
+    
+    .popup-header h2 {
+        font-size: 24px;
+    }
+    
+    .google-signup-btn{
+        padding: 14px 16px;
+        font-size: 15px;
+    }
+}

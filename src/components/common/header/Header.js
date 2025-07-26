@@ -27,6 +27,10 @@ const MockLogo = () => (
 
 export default function Header() {
   const [showRegistrationPopup, setShowRegistrationPopup] = useState(false)
+
+  const { setShowCart } = useCart()
+  const { setShowSearch } = useSearch()
+  const { setShowWishList } = useWish()
   
   // Mock navigation function for demo
   const navigate = (path) => {
@@ -34,9 +38,9 @@ export default function Header() {
   }
 
   // Mock context functions for demo
-  const setShowCart = (fn) => console.log('Toggle cart')
-  const setShowWishList = (fn) => console.log('Toggle wishlist')
-  const setShowSearch = (fn) => console.log('Toggle search')
+  // const setShowCart = (fn) => console.log('Toggle cart')
+  // const setShowWishList = (fn) => console.log('Toggle wishlist')
+  // const setShowSearch = (fn) => console.log('Toggle search')
 
   const handleGoogleSignUp = () => {
     console.log('Google sign up clicked')

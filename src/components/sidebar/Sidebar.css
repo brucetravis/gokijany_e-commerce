@@ -1,0 +1,50 @@
+.sidebar {
+    padding: 40px;
+    padding-top: 20vh;
+    /* background-color: red; */
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 500;
+    border-right: 2px solid #05a653;
+}
+
+
+.sidebar .title {
+    /* color: white; */
+    color: #11e075;
+    text-transform: uppercase;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    /* background: none;; */
+    background-color: #034222;
+    border: 2px solid #05a653;
+    border-radius: 3px;
+    display: inline-block;
+    appearance: none;
+    position: relative;
+}
+
+input[type="checkbox"]:hover {
+    cursor: pointer;
+}
+
+input[type="checkbox"]:checked::after {
+    content: "✔";
+    color: #00ff7b;
+    font-size: 18px;
+    position: absolute;
+    /* left: 2px; */
+    top: -6px;
+    /* background-color: blue; */
+    width: 100%;
+}
+
+label {
+    /* color: #02ff7c; */
+    color: #fff
+}

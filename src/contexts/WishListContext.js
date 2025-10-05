@@ -1,175 +1,127 @@
-import { doc, getDoc } from "firebase/firestore";
+import { ref, get, onValue } from "firebase/database";
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { auth, db } from "../config/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
+// Create the WishList context
+const WishListContext = createContext();
 
-
-// Create the wishList Context
-const WishListContext = createContext()
-
-// Create a custom hook which will be used insted of importing the context manually
-export const useWish = () => useContext(WishListContext)
-
+// Custom hook for easier access
+export const useWish = () => useContext(WishListContext);
 
 export default function WishListProvider({ children }) {
+  // State to control visibility
+  const [showWishList, setShowWishList] = useState(false);
 
-    // state to control the display of the wishlist
-    const [  showWishList, setShowWishList ] = useState(false) // Initial state is false
-    
-    // state to store the wishList products
-    const [wishProducts, setWishProducts ] = useState([]) // initial state is an empty array
+  // State to store wishlist products
+  const [wishProducts, setWishProducts] = useState([]);
 
+  /**
+   * Add a product to the wishlist
+   */
+  const addWishListProduct = async (productId) => {
+    try {
+      const storedWishList = JSON.parse(localStorage.getItem("WishList")) || [];
 
-    // function to add a product to wishList
-    const addWishListProduct = async (productId) => {
+      // Prevent duplicates
+      if (storedWishList.some((item) => item.id === productId)) {
+        toast.info("Product already in wishList.");
+        return;
+      }
 
-        try {
-            // pull the wishList from localStorage
-            const storedWishList = JSON.parse(localStorage.getItem('WishList')) || [] // fall back to an array if tehre is no wishList
+      // Fetch product details from Realtime DB
+      const productRef = ref(db, `Product/${productId}`);
+      const productSnap = await get(productRef);
 
-            // Check if the product is already in thw wishList
-            const alreadyInWishList = storedWishList.some(item => item.id === productId)
+      if (!productSnap.exists()) {
+        console.warn(`Product with ID ${productId} not found.`);
+        return;
+      }
 
-            // if the product is already in the wishList
-            if (alreadyInWishList) {
-                // notify the user and exit the function
-                toast.info('Product alredy in wishList.')
-                // Exit the function
-                return
-                
-                // Otherwise
-            } else {
+      const productData = productSnap.val();
+      const fullProduct = { id: productId, ...productData };
 
-                // An array of the updated wishList
-                const updatedWishList = [
-                    ...storedWishList, // spread all the previous Items in the wishList  
-                    {
-                        id: productId // save the latest product in the wishList
-                    }
-                ]
+      // Update state and localStorage
+      setWishProducts((prev) => [...prev, fullProduct]);
+      localStorage.setItem("WishList", JSON.stringify([...storedWishList, fullProduct]));
 
-                // Add the product to the localStorage wishList
-                localStorage.setItem('WishList', JSON.stringify(updatedWishList)) // Save the wishList in localStorage
-
-                // create a reference to the product in the database in order to get the correct products details
-                const wishProductRef = doc(db, "Products", productId)
-                // Get the product document
-                const wishProductSnapShot = await getDoc(wishProductRef)
-
-                // Update the state with the latest product details
-                setWishProducts((prev) => [
-                    ...prev, // spread all the previous products in the state to account for them
-                    {
-                        id: wishProductSnapShot.id,
-                        ...wishProductSnapShot.data() // spread all the products data
-                    }
-                ])
-
-                // inform the user that he product has been added to wishList successfully
-                toast.success('Product product added to wishList successfully')
-            }
-
-        } catch (err) {
-            console.error(`ERROR ADDING PRODUCT TO WISHLIST: ${err.message}`)
-        }
+      toast.success("Product added to wishList successfully");
+    } catch (err) {
+      console.error(`Error adding product to wishlist: ${err.message}`);
     }
+  };
 
+  /**
+   * Remove a product from the wishlist
+   */
+  const removeWishListProduct = (productId) => {
+    setWishProducts((prev) => prev.filter((item) => item.id !== productId));
 
-    // useEffect to display the product wish the latest details on mount
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            
-            // If a user is not logged in, do not display teh wishList products (clear the wishList)
-            if (!user) {
-                setShowWishList([]) // clear the wishList
-                // Exit the function
-                return
-            
-                // Otherwise
-            } else {
-                // Fetch the wishList products from localStorage
-                const localWishList = JSON.parse(localStorage.getItem('WishList')) || []
-                // Update the state wish the localWishList
-                setWishProducts(localWishList)
+    const storedWishList = JSON.parse(localStorage.getItem("WishList")) || [];
+    const updatedWishList = storedWishList.filter((item) => item.id !== productId);
+    localStorage.setItem("WishList", JSON.stringify(updatedWishList));
+  };
 
-                // background fetch to fetch all the updated product details 
-                const detailedWishList = await Promise.all( //promise.all fetches all product details once. It resolves all promises at once
-                    localWishList.map(async (item) => {
+  /**
+   * Clear all products from the wishlist
+   */
+  const clearWishListProducts = () => {
+    setWishProducts([]);
+    localStorage.removeItem("WishList");
+  };
 
-                        // create a reference to the product
-                        const productRef = doc(db, "Products", item.id)
-                        // Get the document snap shot
-                        const productRefSnapShot = getDoc(productRef)
+  /**
+   * Fetch the wishlist from localStorage and ensure data is up-to-date
+   */
+  const syncWishList = async () => {
+    const localWishList = JSON.parse(localStorage.getItem("WishList")) || [];
 
-                        // return the full product details
-                        return {
-                            id: productRefSnapShot.id,
-                            ...(await productRefSnapShot).data()
+    // Early exit if empty
+    if (!localWishList.length) return;
 
-                        }
-                    })
-                )
+    // Efficiently fetch all products in parallel
+    const updatedWishList = await Promise.all(
+      localWishList.map(async (item) => {
+        const productRef = ref(db, `Product/${item.id}`);
+        const productSnap = await get(productRef);
+        return productSnap.exists() ? { id: item.id, ...productSnap.val() } : null;
+      })
+    );
 
-                // update the wishList state to ccontain the latest product details
-                setWishProducts(detailedWishList)
-                // Update the local Storage with the latest details from localStorage
-                localStorage.setItem('WishList', JSON.stringify(detailedWishList))
-            }
+    const filteredWishList = updatedWishList.filter((item) => item !== null);
 
-        }, [])
+    setWishProducts(filteredWishList);
+    localStorage.setItem("WishList", JSON.stringify(filteredWishList));
+  };
 
+  // Sync wishlist when auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      // if the user is not logged in, clear the wishlist
+        if (!user) {
+            // clear teh wishList
+        setWishProducts([]);
+        return;
+      }
+      await syncWishList();
+    });
 
-        // stop listening on unmount
-        return () => unsubscribe()
+    return () => unsubscribe();
+  }, []);
 
-    }, []) // empty dependency array
-
-
-    // function to remove a wishList Item
-    const removeWishListProduct = (productId) => {
-
-        // Remive the product fro state
-        setWishProducts((prev) => {
-            const remWishProd = prev.filter((item) => item.id !== productId)
-            // return the remaining products
-            return remWishProd
-        })
-
-        // Get the localWishList
-        const localWishList = JSON.parse(localStorage.getItem('WishList'))
-
-        // filter the localWishList
-        const remWishProducts = localWishList.filter(item => item.id !== productId)
-
-        // Update the localStorage wish the remaining Items
-        localStorage.setItem('WishList', JSON.stringify(remWishProducts))
-    }
-
-
-    // function to clear the wishList products
-    const clearWishListProducts = () => {
-        // clear the state
-        setWishProducts([])
-
-        // Get the localWishList
-        const localWishList = JSON.parse(localStorage.getItem('WishList'))
-
-        // remove the wishList from localStorage
-        localStorage.removeItem(localWishList)
-    }
-
-    
-    return(
-        <WishListContext.Provider value={{
-            showWishList, setShowWishList,
-            wishProducts, addWishListProduct,
-            removeWishListProduct, clearWishListProducts
-        }}>
-            { children }
-        </WishListContext.Provider>
-    )
+  return (
+    <WishListContext.Provider
+      value={{
+        showWishList,
+        setShowWishList,
+        wishProducts,
+        addWishListProduct,
+        removeWishListProduct,
+        clearWishListProducts,
+      }}
+    >
+      {children}
+    </WishListContext.Provider>
+  );
 }
-
-
